@@ -25,8 +25,6 @@ func main() {
 		values := re.FindAllString(str, -1)
 		nmb1 := values[0]
 
-		fmt.Println(values)
-
 		if len(values) == 1 {
 			intVar, _ := stringToInt(nmb1 + nmb1)
 			totalSum += intVar
