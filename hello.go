@@ -11,11 +11,11 @@ import (
 
 func main() {
 	var totalSum int = 0
-	content, error := os.ReadFile("./assets/day1input.txt")
-	re := regexp.MustCompile(`(\d+)(,\d{0,2})?(\.\d{2})?`)
+	content, err := os.ReadFile("./assets/day1input.txt")
+	re := regexp.MustCompile(`(\d)|,(\d{0,2})?(\.\d{2})?`)
 
-	if error != nil {
-		log.Fatal(error)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	words := strings.Split(string(content), "\n")
@@ -25,11 +25,10 @@ func main() {
 		values := re.FindAllString(str, -1)
 		nmb1 := values[0]
 
+		fmt.Println(values)
+
 		if len(values) == 1 {
-			intVar, err := strconv.Atoi(nmb1 + nmb1)
-			if err != nil {
-				log.Fatal(err)
-			}
+			intVar, _ := stringToInt(nmb1 + nmb1)
 			totalSum += intVar
 		} else {
 			nmb2 := values[len(values)-1]
@@ -39,14 +38,19 @@ func main() {
 			lastNumber := kebas[len(kebas)-1:]
 			totalNum := firstNumber + lastNumber
 
-			intVar, err := strconv.Atoi(totalNum)
-			if err != nil {
-				log.Fatal(err)
-			}
-
+			intVar, _ := stringToInt(totalNum)
 			totalSum += intVar
 		}
 	}
 
 	fmt.Println("Total sum of coordinates is:", totalSum)
+}
+
+func stringToInt(value string) (int, error) {
+	intVar, err := strconv.Atoi(value)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return intVar, err
 }
