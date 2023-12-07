@@ -1,9 +1,9 @@
-package main
+package day2
 
 import (
 	"fmt"
 )
 
-func main() {
-	fmt.Println("hello from day 2")
+func CalculatePart1() {
+	fmt.Println("Total sum of coordinates is:", "hello from part 2")
 }

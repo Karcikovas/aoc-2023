@@ -1,1 +1,11 @@
-package day1
+package main
+
+import (
+	"aoc2023/internal/day1"
+	"fmt"
+)
+
+func main() {
+	totalSum, _ := day1.CalculatePart1()
+	fmt.Println("Total sum of coordinates is:", totalSum)
+}

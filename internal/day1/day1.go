@@ -1,7 +1,6 @@
-package main
+package day1
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -9,9 +8,9 @@ import (
 	"strings"
 )
 
-func main() {
+func CalculatePart1() (int, error) {
 	var totalSum int = 0
-	content, err := os.ReadFile("./assets/day1input.txt")
+	content, err := os.ReadFile("./../../assets/day1input.txt")
 	re := regexp.MustCompile(`(\d)|,(\d{0,2})?(\.\d{2})?`)
 
 	if err != nil {
@@ -41,7 +40,7 @@ func main() {
 		}
 	}
 
-	fmt.Println("Total sum of coordinates is:", totalSum)
+	return totalSum, err
 }
 
 func stringToInt(value string) (int, error) {
