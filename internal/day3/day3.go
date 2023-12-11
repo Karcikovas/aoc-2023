@@ -19,7 +19,7 @@ func CalculatePart1() {
 
 	lines := strings.Split(string(content), "\n")
 
-	for i := 0; i < 2; i++ {
+	for i := 0; i < len(lines); i++ {
 		var prevLine string
 		var nextLine string
 
@@ -54,36 +54,31 @@ func CalculatePart1() {
 				endFrom = endIndex
 			}
 
-			if startFrom > 0 && currentLine[startFrom] != '.' {
-				log.Println("Has symbol in front", intVar)
-			}
+			symbolSF := currentLine[startFrom]
+			symbolEF := currentLine[endFrom]
 
-			if endFrom < len(currentLine) && currentLine[endFrom] != '.' {
-				log.Println("Has symbol in end", intVar)
-			}
+			if (startFrom > 0 && symbolSF != '.') || (endFrom < len(currentLine) && symbolEF != '.') {
+				totalSum += intVar
+			} else {
+				for b := startFrom; b <= endFrom; b++ {
+					if len(prevLine) > 0 {
 
-			for b := startFrom; b < endFrom; b++ {
-				//Check top
-				if len(prevLine) > 0 {
-					symbol := string(prevLine[b])
+						symbol := string(prevLine[b])
 
-					if symbol != "." {
-						log.Println(intVar)
+						if symbol != "." {
 
-						totalSum += intVar
-						break
+							totalSum += intVar
+							break
+						}
 					}
-				}
+					if len(nextLine) > 0 {
+						symbol := string(nextLine[b])
 
-				// Check bottom
-				if len(nextLine) > 0 {
-					symbol := string(nextLine[b])
+						if symbol != "." {
 
-					if symbol != "." {
-						log.Println(intVar)
-
-						totalSum += intVar
-						break
+							totalSum += intVar
+							break
+						}
 					}
 				}
 			}
