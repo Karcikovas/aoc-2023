@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	totalSum, _ := day1.CalculatePart1()
+	totalSum := day1.CalculatePart1()
 	fmt.Println("Total sum of coordinates is:", totalSum)
 }

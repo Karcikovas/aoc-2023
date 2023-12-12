@@ -1,21 +1,16 @@
 package day1
 
 import (
-	"log"
-	"os"
+	"aoc2023/internal/utils"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
-func CalculatePart1() (int, error) {
+func CalculatePart1() int {
 	var totalSum int = 0
-	content, err := os.ReadFile("./../../assets/day1input.txt")
-	re := regexp.MustCompile(`(\d)|,(\d{0,2})?(\.\d{2})?`)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	content := utils.ReadInput("./../../assets/day1input.txt")
+	re := regexp.MustCompile(`(\d)|,(\d{0,2})?(\.\d{2})?`)
 
 	words := strings.Split(string(content), "\n")
 
@@ -25,7 +20,7 @@ func CalculatePart1() (int, error) {
 		nmb1 := values[0]
 
 		if len(values) == 1 {
-			intVar, _ := stringToInt(nmb1 + nmb1)
+			intVar, _ := utils.StringToInt(nmb1 + nmb1)
 			totalSum += intVar
 		} else {
 			nmb2 := values[len(values)-1]
@@ -35,19 +30,10 @@ func CalculatePart1() (int, error) {
 			lastNumber := kebas[len(kebas)-1:]
 			totalNum := firstNumber + lastNumber
 
-			intVar, _ := stringToInt(totalNum)
+			intVar, _ := utils.StringToInt(totalNum)
 			totalSum += intVar
 		}
 	}
 
-	return totalSum, err
-}
-
-func stringToInt(value string) (int, error) {
-	intVar, err := strconv.Atoi(value)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return intVar, err
+	return totalSum
 }

@@ -1,98 +1,82 @@
 package day3
 
 import (
-	"log"
-	"os"
+	"aoc2023/internal/utils"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
-func CalculatePart1() {
-	totalSum := 0
-	content, err := os.ReadFile("./../../assets/day3input.txt")
-	re := regexp.MustCompile(`\d+`)
+func CalculatePart1() int {
+	var totalSum int
+	content := utils.ReadInput("./../../assets/day3input.txt")
+	rows := strings.Split(string(content), "\n")
 
-	if err != nil {
-		log.Fatal(err)
+	var grid [140][]string
+
+	for y, line := range rows {
+		characters := strings.Split(line, "")
+		grid[y] = characters
 	}
 
-	lines := strings.Split(string(content), "\n")
+	for y, row := range grid {
+		number := ""
 
-	for i := 0; i < len(lines); i++ {
-		var prevLine string
-		var nextLine string
+		for x, character := range row {
+			isNumber, _ := regexp.MatchString(`[0-9]`, character)
 
-		currentLine := lines[i]
-		numbers := re.FindAllString(currentLine, -1)
+			if isNumber {
+				number += grid[y][x]
 
-		if i > 0 {
-			prevLine = lines[i-1]
-		}
+			} else if number != "" || x == len(row) {
 
-		if i+1 < len(lines) {
-			nextLine = lines[i+1]
-		}
-
-		for _, number := range numbers {
-			var startFrom int
-			var endFrom int
-
-			intVar, _ := stringToInt(number)
-			startIndex := strings.Index(currentLine, number)
-			endIndex := startIndex + len(number) - 1
-
-			if strings.Index(currentLine, number) > 0 {
-				startFrom = startIndex - 1
+				totalSum += validateNumber(number, x, y, grid)
+				number = ""
 			} else {
-				startFrom = startIndex
-			}
-
-			if endIndex+1 < len(currentLine) {
-				endFrom = endIndex + 1
-			} else {
-				endFrom = endIndex
-			}
-
-			symbolSF := currentLine[startFrom]
-			symbolEF := currentLine[endFrom]
-
-			if (startFrom > 0 && symbolSF != '.') || (endFrom < len(currentLine) && symbolEF != '.') {
-				totalSum += intVar
-			} else {
-				for b := startFrom; b <= endFrom; b++ {
-					if len(prevLine) > 0 {
-
-						symbol := string(prevLine[b])
-
-						if symbol != "." {
-
-							totalSum += intVar
-							break
-						}
-					}
-					if len(nextLine) > 0 {
-						symbol := string(nextLine[b])
-
-						if symbol != "." {
-
-							totalSum += intVar
-							break
-						}
-					}
-				}
+				number = ""
 			}
 		}
+
+		totalSum += validateNumber(number, len(row), y, grid)
 	}
 
-	log.Println("Total sum:", totalSum)
+	return totalSum
 }
 
-func stringToInt(value string) (int, error) {
-	intVar, err := strconv.Atoi(value)
-	if err != nil {
-		log.Fatal(err)
+func validateNumber(number string, x int, y int, grid [140][]string) int {
+
+	end := x - 1
+	start := x - len(number)
+	middle := len(number)/2 + start
+
+	coordinates := [][]int{
+		{y, start - 1},
+		{y, end + 1},
+
+		{y + 1, start - 1},
+		{y + 1, start},
+		{y + 1, middle},
+		{y + 1, end},
+		{y + 1, end + 1},
+
+		{y - 1, start - 1},
+		{y - 1, start},
+		{y - 1, middle},
+		{y - 1, end},
+		{y - 1, end + 1},
 	}
 
-	return intVar, err
+	for _, coordinate := range coordinates {
+		if coordinate[0] >= 0 && coordinate[0] < len(grid) && coordinate[1] >= 0 && coordinate[1] < len(grid[0]) {
+			isNumber, _ := regexp.MatchString(`[0-9]`, grid[coordinate[0]][coordinate[1]])
+
+			if grid[coordinate[0]][coordinate[1]] != "." && !isNumber {
+				convertedNumber, _ := strconv.Atoi(number)
+
+				return convertedNumber
+			}
+		}
+	}
+
+	return 0
 }
