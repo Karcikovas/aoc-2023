@@ -4,7 +4,6 @@ import (
 	"aoc2023/internal/utils"
 	"log"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -14,33 +13,32 @@ func CalculatePart1() int {
 	var cards = getCardsValues("./../../assets/day4input.txt")
 
 	for _, card := range cards {
-		var successfulNumbers []int
+		var score int
 		cardNumbers := strings.Split(card, "|")
 		winningNumbers := getIntArrayFromString(cardNumbers[0])
 		numbersToCheck := getIntArrayFromString(cardNumbers[1])
-		sort.Ints(numbersToCheck)
-
-		log.Println(winningNumbers)
 
 		for _, winningNumber := range winningNumbers {
 			isSuccessful := binarySearch(winningNumber, numbersToCheck)
 
-			if isSuccessful {
-				successfulNumbers = append(successfulNumbers, winningNumber)
+			if isSuccessful && score == 0 {
+				score = 1
+			} else if isSuccessful && score > 0 {
+				score *= 2
 			}
 		}
 
-		totalCardsValue += calculatePoint(successfulNumbers)
+		totalCardsValue += score
 	}
 
 	return totalCardsValue
 }
 
-func getCardsValues(readFile string) [4]string {
+func getCardsValues(readFile string) [193]string {
 	content := utils.ReadInput(readFile)
 	rows := strings.Split(string(content), "\n")
 
-	var cards [4]string
+	var cards [193]string
 
 	for y, line := range rows {
 		cardNumber := strconv.Itoa(y + 1)
@@ -92,12 +90,4 @@ func binarySearch(successValue int, options []int) bool {
 	}
 
 	return true
-}
-
-func calculatePoint(winningNumbers []int) int {
-	if len(winningNumbers) <= 2 {
-		return len(winningNumbers)
-	} else {
-		return len(winningNumbers) * 2
-	}
 }
