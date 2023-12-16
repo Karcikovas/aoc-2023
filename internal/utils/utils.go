@@ -3,6 +3,7 @@ package utils
 import (
 	"log"
 	"os"
+	"regexp"
 	"strconv"
 )
 
@@ -21,4 +22,19 @@ func StringToInt(value string) (int, error) {
 	}
 
 	return intVar, err
+}
+
+func GetIntArrayFromString(stringToConvert string) []int {
+	var number []int
+
+	re := regexp.MustCompile(`(\d+)`)
+	values := re.FindAllString(stringToConvert, -1)
+
+	for _, value := range values {
+		intVal, _ := StringToInt(value)
+
+		number = append(number, intVal)
+	}
+
+	return number
 }

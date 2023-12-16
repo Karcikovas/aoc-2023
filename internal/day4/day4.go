@@ -2,8 +2,6 @@ package day4
 
 import (
 	"aoc2023/internal/utils"
-	"log"
-	"regexp"
 	"strconv"
 	"strings"
 )
@@ -15,8 +13,8 @@ func CalculatePart1() int {
 	for _, card := range cards {
 		var score int
 		cardNumbers := strings.Split(card, "|")
-		winningNumbers := getIntArrayFromString(cardNumbers[0])
-		numbersToCheck := getIntArrayFromString(cardNumbers[1])
+		winningNumbers := utils.GetIntArrayFromString(cardNumbers[0])
+		numbersToCheck := utils.GetIntArrayFromString(cardNumbers[1])
 
 		for _, winningNumber := range winningNumbers {
 			isSuccessful := binarySearch(winningNumber, numbersToCheck)
@@ -45,27 +43,10 @@ func getCardsValues(readFile string) [193]string {
 		cardName := cardNumber + ":"
 		numbers := strings.Split(line, cardName)
 
-		log.Print(numbers[1])
-
 		cards[y] = numbers[1]
 	}
 
 	return cards
-}
-
-func getIntArrayFromString(stringToConvert string) []int {
-	var number []int
-
-	re := regexp.MustCompile(`(\d+)`)
-	values := re.FindAllString(stringToConvert, -1)
-
-	for _, value := range values {
-		intVal, _ := utils.StringToInt(value)
-
-		number = append(number, intVal)
-	}
-
-	return number
 }
 
 func binarySearch(successValue int, options []int) bool {
