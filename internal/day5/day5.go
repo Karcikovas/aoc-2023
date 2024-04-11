@@ -2,28 +2,32 @@ package day5
 
 import (
 	"aoc2023/internal/utils"
-	"encoding/json"
 	"log"
 	"regexp"
 	"strings"
 )
 
 func CalculatePart1() int {
-	initialValues("./../../assets/day5input.txt")
+	initialValues("./assets/day5input.txt")
 
 	return 0
 }
 
-type sourceToDestination struct {
+type mapItem struct {
 	destination []int `json:"destination"`
 	source      []int `json:"source"`
 	length      []int `json:"length"`
 }
 
+type destinationToSourceMap struct {
+	title string    `json:"title"`
+	items []mapItem `json:"items"`
+}
+
 func initialValues(filePath string) {
 	var seeds []int
-	var almanacMap []sourceToDestination
-	var currentStruct sourceToDestination
+	var almanacMap []destinationToSourceMap
+	//var currentStruct mapItem
 
 	content := utils.ReadInput(filePath)
 
@@ -35,7 +39,7 @@ func initialValues(filePath string) {
 		seedsPattern := regexp.MustCompile(fmtMatchSeeds)
 		mapsPattern := regexp.MustCompile(fmtMatchMap)
 		isSeeds := bool(seedsPattern.MatchString(row))
-		isMap := bool(mapsPattern.MatchString(row))
+		isNewMap := bool(mapsPattern.MatchString(row))
 
 		if isSeeds {
 			values := strings.Split(row, ":")
@@ -46,24 +50,25 @@ func initialValues(filePath string) {
 			continue
 		}
 
-		if isMap {
-			almanacMap = append(almanacMap, currentStruct)
-			currentStruct = sourceToDestination{}
-
-			continue
-		} else {
-			values := utils.GetIntArrayFromString(row)
-
-			if len(values) > 0 {
-				currentStruct.destination = append(currentStruct.destination, values[0])
-				currentStruct.source = append(currentStruct.source, values[1])
-				currentStruct.length = append(currentStruct.length, values[2])
-			}
+		if isNewMap {
+			m := destinationToSourceMap{title: row}
+			almanacMap = append(almanacMap, m)
 		}
+
+		//if isMap {
+		//	almanacMap = append(almanacMap, currentStruct)
+		//	currentStruct = mapItem{}
+		//
+		//	continue
+		//} else {
+		//	values := utils.GetIntArrayFromString(row)
+		//
+		//	if len(values) > 0 {
+		//		currentStruct.destination = append(currentStruct.destination, values[0])
+		//		currentStruct.source = append(currentStruct.source, values[1])
+		//		currentStruct.length = append(currentStruct.length, values[2])
+		//	}
+		//}
 	}
-
-	log.Print(seeds)
-	fooMarshalled, _ := json.Marshal(almanacMap)
-
-	log.Print(string(fooMarshalled))
+	log.Print(almanacMap, seeds)
 }

@@ -9,7 +9,7 @@ import (
 func CalculatePart1() int {
 	var totalSum int = 0
 
-	content := utils.ReadInput("./../../assets/day1input.txt")
+	content := utils.ReadInput("./assets/day1input.txt")
 	re := regexp.MustCompile(`(\d)|,(\d{0,2})?(\.\d{2})?`)
 
 	words := strings.Split(string(content), "\n")

@@ -8,7 +8,7 @@ import (
 
 func CalculatePart1() int {
 	var totalCardsValue int
-	var cards = getCardsValues("./../../assets/day4input.txt")
+	var cards = getCardsValues("./assets/day4input.txt")
 
 	for _, card := range cards {
 		var score int
@@ -17,7 +17,7 @@ func CalculatePart1() int {
 		numbersToCheck := utils.GetIntArrayFromString(cardNumbers[1])
 
 		for _, winningNumber := range winningNumbers {
-			isSuccessful := binarySearch(winningNumber, numbersToCheck)
+			isSuccessful := utils.BinarySearch(winningNumber, numbersToCheck)
 
 			if isSuccessful && score == 0 {
 				score = 1
@@ -47,28 +47,4 @@ func getCardsValues(readFile string) [193]string {
 	}
 
 	return cards
-}
-
-func binarySearch(successValue int, options []int) bool {
-	low := 0
-	high := len(options) - 1
-
-	for low <= high {
-		middleValueIndex := low + (high-low)/2
-		middleValue := options[middleValueIndex]
-
-		if successValue > middleValue {
-			low = middleValueIndex + 1
-		} else if successValue < middleValue {
-			high = middleValueIndex - 1
-		} else {
-			return true
-		}
-	}
-
-	if low == len(options) || low != successValue {
-		return false
-	}
-
-	return true
 }

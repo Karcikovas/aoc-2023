@@ -16,7 +16,7 @@ type Cubes struct {
 }
 
 func CalculatePart1() {
-	file, err := os.Open("./../../assets/day2input.txt")
+	file, err := os.Open("./assets/day2input.txt")
 	totalGameNumber := 0
 	totalGameNumberSum := 0
 

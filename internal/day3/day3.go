@@ -9,7 +9,7 @@ import (
 
 func CalculatePart1() int {
 	var totalSum int
-	content := utils.ReadInput("./../../assets/day3input.txt")
+	content := utils.ReadInput("./assets/day3input.txt")
 	rows := strings.Split(string(content), "\n")
 
 	var grid [140][]string
