@@ -2,15 +2,19 @@ package day5
 
 import (
 	"aoc2023/internal/utils"
-	"log"
 	"regexp"
 	"strings"
 )
 
 func CalculatePart1() int {
-	initialValues("./assets/day5input.txt")
+	var location []int
+	almanacMap, seeds := InitialValues("./assets/day5input.txt")
 
-	return 0
+	for _, seed := range seeds {
+		location = append(location, GetLocationNumber(almanacMap, seed))
+	}
+
+	return utils.GetLowestNumberInCollection(location)
 }
 
 type Item struct {
@@ -33,7 +37,7 @@ func (almanacMap *AlmanacMap) AddMap(item DestinationToSourceMap) []DestinationT
 	return almanacMap.Maps
 }
 
-func initialValues(filePath string) {
+func InitialValues(filePath string) (*AlmanacMap, []int) {
 	var seeds []int
 	var activeMapName string
 
@@ -82,7 +86,8 @@ func initialValues(filePath string) {
 			m.Items = append(m.Items, i)
 		}
 	}
-	log.Print(GetMapByTitle(almanacMap, "light-to-temperature map:"), seeds)
+
+	return almanacMap, seeds
 }
 func GetMapByTitle(almanac *AlmanacMap, title string) *DestinationToSourceMap {
 	for i := range almanac.Maps {
@@ -91,4 +96,32 @@ func GetMapByTitle(almanac *AlmanacMap, title string) *DestinationToSourceMap {
 		}
 	}
 	return nil
+}
+func GetLocationNumber(almanacMap *AlmanacMap, seedNumber int) int {
+	var destinationToSourceNumber = seedNumber
+	var maps []string
+
+	for _, m := range almanacMap.Maps {
+		maps = append(maps, m.Title)
+	}
+
+	for _, v := range maps {
+		destinationToSourceMap := GetMapByTitle(almanacMap, v)
+
+		for _, i := range destinationToSourceMap.Items {
+			sum := i.Source + i.Length - 1
+
+			if i.Source < seedNumber && sum > seedNumber {
+				destinationSum := i.Destination + i.Length - 1
+				diff := sum - seedNumber
+
+				destinationToSourceNumber = destinationSum - diff
+
+				break
+			}
+		}
+
+	}
+
+	return destinationToSourceNumber
 }

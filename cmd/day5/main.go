@@ -8,5 +8,5 @@ import (
 func main() {
 	totalPointSum := day5.CalculatePart1()
 
-	log.Print("Day 5 result Part1 total scratch total cards value ", totalPointSum)
+	log.Print("Day 5 result Part1 lowest number is: ", totalPointSum)
 }

@@ -38,3 +38,14 @@ func GetIntArrayFromString(stringToConvert string) []int {
 
 	return number
 }
+
+func GetLowestNumberInCollection(collection []int) int {
+	lowestInt := collection[0]
+	for _, v := range collection {
+		if lowestInt < v {
+			lowestInt = v
+		}
+	}
+
+	return lowestInt
+}
