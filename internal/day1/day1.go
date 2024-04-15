@@ -20,7 +20,7 @@ func CalculatePart1() int {
 		nmb1 := values[0]
 
 		if len(values) == 1 {
-			intVar, _ := utils.StringToInt(nmb1 + nmb1)
+			intVar := utils.StringToInt(nmb1 + nmb1)
 			totalSum += intVar
 		} else {
 			nmb2 := values[len(values)-1]
@@ -30,7 +30,7 @@ func CalculatePart1() int {
 			lastNumber := kebas[len(kebas)-1:]
 			totalNum := firstNumber + lastNumber
 
-			intVar, _ := utils.StringToInt(totalNum)
+			intVar := utils.StringToInt(totalNum)
 			totalSum += intVar
 		}
 	}

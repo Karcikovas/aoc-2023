@@ -15,13 +15,13 @@ func ReadInput(file string) string {
 	return string(rawFile)
 }
 
-func StringToInt(value string) (int, error) {
+func StringToInt(value string) int {
 	intVar, err := strconv.Atoi(value)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return intVar, err
+	return intVar
 }
 
 func GetIntArrayFromString(stringToConvert string) []int {
@@ -31,7 +31,7 @@ func GetIntArrayFromString(stringToConvert string) []int {
 	values := re.FindAllString(stringToConvert, -1)
 
 	for _, value := range values {
-		intVal, _ := StringToInt(value)
+		intVal := StringToInt(value)
 
 		number = append(number, intVal)
 	}
