@@ -89,6 +89,7 @@ func InitialValues(filePath string) (*AlmanacMap, []int) {
 
 	return almanacMap, seeds
 }
+
 func GetMapByTitle(almanac *AlmanacMap, title string) *DestinationToSourceMap {
 	for i := range almanac.Maps {
 		if almanac.Maps[i].Title == title {
@@ -97,6 +98,7 @@ func GetMapByTitle(almanac *AlmanacMap, title string) *DestinationToSourceMap {
 	}
 	return nil
 }
+
 func GetLocationNumber(almanacMap *AlmanacMap, seedNumber int) int {
 	var destinationToSourceNumber = seedNumber
 	var maps []string
@@ -109,13 +111,13 @@ func GetLocationNumber(almanacMap *AlmanacMap, seedNumber int) int {
 		destinationToSourceMap := GetMapByTitle(almanacMap, v)
 
 		for _, i := range destinationToSourceMap.Items {
-			sum := i.Source + i.Length - 1
+			sourceMaxValue := i.Source + i.Length
 
-			if i.Source < seedNumber && sum > seedNumber {
-				destinationSum := i.Destination + i.Length - 1
-				diff := sum - seedNumber
+			if i.Source < destinationToSourceNumber && sourceMaxValue > destinationToSourceNumber {
+				destinationMaxValue := i.Destination + i.Length
 
-				destinationToSourceNumber = destinationSum - diff
+				diff := sourceMaxValue - destinationToSourceNumber
+				destinationToSourceNumber = destinationMaxValue - diff
 
 				break
 			}

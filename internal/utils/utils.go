@@ -42,7 +42,7 @@ func GetIntArrayFromString(stringToConvert string) []int {
 func GetLowestNumberInCollection(collection []int) int {
 	lowestInt := collection[0]
 	for _, v := range collection {
-		if lowestInt < v {
+		if lowestInt > v {
 			lowestInt = v
 		}
 	}
