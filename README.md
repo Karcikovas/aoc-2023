@@ -1,6 +1,32 @@
 # Advent of Code λ2023
 
-This repository contains my solutions for the [Advent of Code 2023](https://adventofcode.com/2023), written in [Go](https://goland.org).
+[**Advent of Code**](http://adventofcode.com/) is an Advent calendar of small programming puzzles for a
+variety of skill sets and skill levels that can be solved in written in [Go](https://goland.org).
+People use them as a [speed contest](https://adventofcode.com/2023/leaderboard), interview prep, company training,
+university coursework, practice problems,
+or to [challenge each other](https://www.reddit.com/r/adventofcode/search?q=flair%3Aupping&restrict_sr=on).
+
+This repository contains solutions for puzzles and cli tool to run solutions to get answers for input on site.
+
+## Implemented solutions
+
+<!--- advent_readme_stars table [2023] --->
+### 2023 Results
+
+|                      Day                       |    Part 1     | Part 2 |
+|:----------------------------------------------:|:-------------:|:------:|
+|  [Day 1](https://adventofcode.com/2023/day/1)  |       ⭐       |   -    |
+|  [Day 2](https://adventofcode.com/2023/day/2)  |       ⭐       |   -    |
+|  [Day 3](https://adventofcode.com/2023/day/3)  |       ⭐       |   -    |
+|  [Day 4](https://adventofcode.com/2023/day/4)  |       ⭐       |   -    |
+|  [Day 5](https://adventofcode.com/2023/day/5)  |       ⭐       |   -    |
+|  [Day 6](https://adventofcode.com/2023/day/6)  | working on it |   -    |
+|  [Day 7](https://adventofcode.com/2023/day/7)  |       -       |   -    |
+|  [Day 8](https://adventofcode.com/2023/day/8)  |       -       |   -    |
+|  [Day 9](https://adventofcode.com/2023/day/9)  |       -       |   -    |
+| [Day 10](https://adventofcode.com/2023/day/10) |       -       |   -    |
+| [Day 11](https://adventofcode.com/2023/day/11) |       -       |   -    |
+
 
 ## Project Structure
 
