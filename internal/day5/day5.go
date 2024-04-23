@@ -2,6 +2,7 @@ package day5
 
 import (
 	"aoc2023/internal/utils"
+	"log"
 	"regexp"
 	"strings"
 )
@@ -111,17 +112,19 @@ func GetLocationNumber(almanacMap *AlmanacMap, seedNumber int) int {
 		destinationToSourceMap := GetMapByTitle(almanacMap, v)
 
 		for _, i := range destinationToSourceMap.Items {
-			sourceMaxValue := i.Source + i.Length
+			sourceMinValue := i.Source - 1
+			sourceMaxValue := i.Source + i.Length - 1
+			destinationMaxValue := i.Destination + i.Length - 1
 
-			if i.Source < destinationToSourceNumber && sourceMaxValue > destinationToSourceNumber {
-				destinationMaxValue := i.Destination + i.Length
-
+			if sourceMinValue < destinationToSourceNumber && sourceMaxValue >= destinationToSourceNumber {
 				diff := sourceMaxValue - destinationToSourceNumber
-				destinationToSourceNumber = destinationMaxValue - diff
 
+				destinationToSourceNumber = destinationMaxValue - diff
 				break
 			}
 		}
+
+		log.Println(v, destinationToSourceNumber)
 
 	}
 
