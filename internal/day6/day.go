@@ -8,7 +8,9 @@ import (
 )
 
 func CalculatePart1() int {
-	initialValues()
+	races := initialValues()
+
+	log.Println(races)
 	return 1
 }
 
@@ -22,10 +24,10 @@ type Races struct {
 	Races []Race
 }
 
-func initialValues() {
+func initialValues() Races {
 	var times []string
 	var distances []string
-	races := &Races{}
+	races := Races{}
 
 	content := utils.ReadInput("./assets/day6input.txt")
 	rows := strings.Split(string(content), "\n")
@@ -56,6 +58,5 @@ func initialValues() {
 		races.Races = append(races.Races, race)
 	}
 
-	log.Print(races)
-
+	return races
 }
