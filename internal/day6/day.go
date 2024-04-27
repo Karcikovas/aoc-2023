@@ -2,16 +2,21 @@ package day6
 
 import (
 	"aoc2023/internal/utils"
-	"log"
 	"regexp"
 	"strings"
 )
 
 func CalculatePart1() int {
-	races := initialValues()
+	input := initialValues()
+	margin := 1
 
-	log.Println(races)
-	return 1
+	for _, race := range input.Races {
+		n := calculateNumberOfWinnings(race)
+
+		margin = margin * n
+	}
+
+	return margin
 }
 
 type Race struct {
@@ -59,4 +64,20 @@ func initialValues() Races {
 	}
 
 	return races
+}
+
+func calculateNumberOfWinnings(race Race) int {
+	var numberOfWays int
+
+	for s := 0; s <= race.Duration; s++ {
+		timeLeft := race.Duration - s
+		distanceCovered := timeLeft * s
+
+		if distanceCovered > race.Record {
+
+			numberOfWays++
+		}
+	}
+
+	return numberOfWays
 }
