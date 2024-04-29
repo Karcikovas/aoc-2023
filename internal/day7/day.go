@@ -3,7 +3,6 @@ package day7
 import (
 	"aoc2023/internal/utils"
 	"log"
-	"reflect"
 	"strings"
 )
 
@@ -30,6 +29,8 @@ type HandWithStrength struct {
 }
 
 func getHandsWithStrength(hands []Hand) []HandWithStrength {
+	const maxAmountOfPairs = 2
+
 	var handsWithStrength []HandWithStrength
 	for _, hand := range hands {
 		counts := make(map[string]int)
@@ -44,16 +45,14 @@ func getHandsWithStrength(hands []Hand) []HandWithStrength {
 			}
 		}
 
-		utils.SortByHighestValue(counts)
-
-		keys := reflect.ValueOf(counts).MapKeys()
-		firstValue := counts[keys[0].String()]
-		secondValue := counts[keys[1].String()]
+		sortedItems := utils.SortByHighestValue(counts)
+		firstValue := sortedItems[0].Value
+		secondValue := sortedItems[1].Value
 
 		hand := HandWithStrength{
 			Cards:    hand.Cards,
 			Bid:      hand.Bid,
-			Strength: 2*firstValue + secondValue,
+			Strength: maxAmountOfPairs*firstValue + secondValue,
 		}
 
 		handsWithStrength = append(handsWithStrength, hand)
