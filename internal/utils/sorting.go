@@ -1,5 +1,10 @@
 package utils
 
+import (
+	"fmt"
+	"sort"
+)
+
 func BinarySearch(successValue int, options []int) bool {
 	low := 0
 	high := len(options) - 1
@@ -22,4 +27,25 @@ func BinarySearch(successValue int, options []int) bool {
 	}
 
 	return true
+}
+
+type item struct {
+	key   string
+	value int
+}
+
+func SortByHighestValue(m map[string]int) {
+	n := map[int][]string{}
+	var a []int
+
+	for k, v := range m {
+		n[v] = append(n[v], k)
+	}
+	for k := range n {
+		a = append(a, k)
+	}
+	sort.Sort(sort.Reverse(sort.IntSlice(a)))
+	for _, k := range a {
+		fmt.Print(k)
+	}
 }

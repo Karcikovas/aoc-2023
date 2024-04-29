@@ -24,6 +24,10 @@ func StringToInt(value string) int {
 	return intVar
 }
 
+func NumToBool(num int) bool {
+	return num != 0
+}
+
 func GetIntArrayFromString(stringToConvert string) []int {
 	var number []int
 
