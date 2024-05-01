@@ -11,8 +11,24 @@ const (
 	King  = 13
 	Queen = 12
 	Jack  = 11
-	T     = 10
+	Teen  = 10
 )
+
+var cardValues = map[string]int{
+	"A": Ace,
+	"K": King,
+	"Q": Queen,
+	"J": Jack,
+	"T": Teen,
+	"9": 9,
+	"8": 8,
+	"7": 7,
+	"6": 6,
+	"5": 5,
+	"4": 4,
+	"3": 3,
+	"2": 2,
+}
 
 type HandWithStrength struct {
 	Cards    string
@@ -55,9 +71,13 @@ func sortHands(hands []HandWithStrength) []HandWithStrength {
 		}
 
 		for i := 0; i <= 5; i++ {
-			if a.Cards[i] != b.Cards[i] {
-				//TODO: Need to add card values comparison
-				return true
+			cardA := string(a.Cards[i])
+			cardB := string(b.Cards[i])
+			valueA := cardValues[cardA]
+			valueB := cardValues[cardB]
+
+			if valueA != valueB {
+				return valueA < valueB
 			}
 		}
 
@@ -85,8 +105,13 @@ func getHandsWithStrength(hands []Hand) []HandWithStrength {
 		}
 
 		sortedItems := utils.SortMapByHighestValue(counts)
+
 		firstValue := sortedItems[0].Value
-		secondValue := sortedItems[1].Value
+		var secondValue = 1
+
+		if len(sortedItems) > 1 {
+			secondValue = sortedItems[1].Value
+		}
 
 		hand := HandWithStrength{
 			Cards:    hand.Cards,
