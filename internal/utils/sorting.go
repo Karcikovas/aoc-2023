@@ -33,7 +33,7 @@ type Item struct {
 	Value int
 }
 
-func SortByHighestValue(m map[string]int) []Item {
+func SortMapByHighestValue(m map[string]int) []Item {
 	var items []Item
 
 	for i, v := range m {

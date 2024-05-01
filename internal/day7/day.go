@@ -2,7 +2,7 @@ package day7
 
 import (
 	"aoc2023/internal/utils"
-	"log"
+	"sort"
 	"strings"
 )
 
@@ -14,18 +14,57 @@ const (
 	T     = 10
 )
 
-func CalculatePart1() int {
-	hands := initialValues()
-	handsWithStrength := getHandsWithStrength(hands)
-
-	log.Println(handsWithStrength)
-	return 0
-}
-
 type HandWithStrength struct {
 	Cards    string
 	Bid      int
 	Strength int
+}
+
+type Hand struct {
+	Cards string
+	Bid   int
+}
+
+func CalculatePart1() int {
+	hands := initialValues()
+	handsWithStrength := getHandsWithStrength(hands)
+	handsOrderedByStrength := sortHands(handsWithStrength)
+	totalValue := calculateTotalWinnings(handsOrderedByStrength)
+
+	return totalValue
+}
+
+func calculateTotalWinnings(hands []HandWithStrength) int {
+	var totalValue int
+
+	for i, hand := range hands {
+		totalValue = totalValue + (i+1)*hand.Bid
+	}
+
+	return totalValue
+}
+
+func sortHands(hands []HandWithStrength) []HandWithStrength {
+
+	sort.Slice(hands, func(i, j int) bool {
+		a := hands[i]
+		b := hands[j]
+
+		if a.Strength != b.Strength {
+			return a.Strength < b.Strength
+		}
+
+		for i := 0; i <= 5; i++ {
+			if a.Cards[i] != b.Cards[i] {
+				//TODO: Need to add card values comparison
+				return true
+			}
+		}
+
+		return false
+	})
+
+	return hands
 }
 
 func getHandsWithStrength(hands []Hand) []HandWithStrength {
@@ -45,7 +84,7 @@ func getHandsWithStrength(hands []Hand) []HandWithStrength {
 			}
 		}
 
-		sortedItems := utils.SortByHighestValue(counts)
+		sortedItems := utils.SortMapByHighestValue(counts)
 		firstValue := sortedItems[0].Value
 		secondValue := sortedItems[1].Value
 
@@ -59,11 +98,6 @@ func getHandsWithStrength(hands []Hand) []HandWithStrength {
 	}
 
 	return handsWithStrength
-}
-
-type Hand struct {
-	Cards string
-	Bid   int
 }
 
 func initialValues() []Hand {
