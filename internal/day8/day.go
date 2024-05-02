@@ -2,7 +2,6 @@ package day8
 
 import (
 	"aoc2023/internal/utils"
-	"log"
 	"strings"
 )
 
@@ -17,10 +16,38 @@ type Node struct {
 
 func CalculatePart1() int {
 	network, networkMap := initialValues()
+	steps := mapFromStartToEnd(network, networkMap)
+	return len(steps)
+}
 
-	log.Println(network, networkMap)
+var stepIndex int = 0
+var steps []string
 
-	return 0
+func getSteps(key string, network NetworkInstructions, networkMap NodesMap, destination string) {
+	if destination != key {
+		if stepIndex >= len(network) {
+			network = append(network, network...)
+		}
+
+		direction := string(network[stepIndex])
+		stepIndex += 1
+		steps = append(steps, key)
+
+		if direction == "L" {
+			getSteps(networkMap[key].Left, network, networkMap, destination)
+		} else {
+			getSteps(networkMap[key].Right, network, networkMap, destination)
+		}
+	}
+}
+
+func mapFromStartToEnd(network NetworkInstructions, networkMap NodesMap) []string {
+	startKey := "AAA"
+	destinationKey := "ZZZ"
+
+	getSteps(startKey, network, networkMap, destinationKey)
+
+	return steps
 }
 
 func initialValues() (NetworkInstructions, NodesMap) {
@@ -41,8 +68,6 @@ func initialValues() (NetworkInstructions, NodesMap) {
 			slices := strings.Split(row, " = ")
 			key := slices[0]
 			stringValues := slices[1]
-			log.Println(key, stringValues)
-
 			stringValues = strings.TrimLeft(stringValues, "(")
 			stringValues = strings.TrimRight(stringValues, ")")
 			values := strings.Split(stringValues, ", ")
