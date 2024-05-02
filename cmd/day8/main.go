@@ -8,5 +8,5 @@ import (
 func main() {
 	totalPointSum := day8.CalculatePart1()
 
-	log.Print("Day 8 result Part1 lowest number is: ", totalPointSum)
+	log.Print("Day 8 total steps required to reach ZZZ: ", totalPointSum)
 }
