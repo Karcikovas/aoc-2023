@@ -14,16 +14,19 @@ type Node struct {
 	Right string
 }
 
+var stepIndex int = 0
+
 func CalculatePart1() int {
 	network, networkMap := initialValues()
-	steps := mapFromStartToEnd(network, networkMap)
-	return len(steps)
+	startKey := "AAA"
+	destinationKey := "ZZZ"
+
+	getStepsCount(startKey, network, networkMap, destinationKey)
+
+	return stepIndex
 }
 
-var stepIndex int = 0
-var steps []string
-
-func getSteps(key string, network NetworkInstructions, networkMap NodesMap, destination string) {
+func getStepsCount(key string, network NetworkInstructions, networkMap NodesMap, destination string) {
 	if destination != key {
 		if stepIndex >= len(network) {
 			network = append(network, network...)
@@ -31,23 +34,13 @@ func getSteps(key string, network NetworkInstructions, networkMap NodesMap, dest
 
 		direction := string(network[stepIndex])
 		stepIndex += 1
-		steps = append(steps, key)
 
 		if direction == "L" {
-			getSteps(networkMap[key].Left, network, networkMap, destination)
+			getStepsCount(networkMap[key].Left, network, networkMap, destination)
 		} else {
-			getSteps(networkMap[key].Right, network, networkMap, destination)
+			getStepsCount(networkMap[key].Right, network, networkMap, destination)
 		}
 	}
-}
-
-func mapFromStartToEnd(network NetworkInstructions, networkMap NodesMap) []string {
-	startKey := "AAA"
-	destinationKey := "ZZZ"
-
-	getSteps(startKey, network, networkMap, destinationKey)
-
-	return steps
 }
 
 func initialValues() (NetworkInstructions, NodesMap) {
