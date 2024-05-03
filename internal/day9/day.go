@@ -26,12 +26,7 @@ func prediction(m []int, b bool) {
 		for i, v := range m {
 			if i+1 < len(m) {
 				diff := m[i+1] - v
-
-				if diff == 0 {
-					lastIsZero = true
-				} else {
-					lastIsZero = false
-				}
+				lastIsZero = diff == 0
 
 				n = append(n, diff)
 			} else {
@@ -39,10 +34,10 @@ func prediction(m []int, b bool) {
 			}
 		}
 
-		log.Print(n, lastIsZero)
+		log.Print(n)
 		prediction(n, lastIsZero)
 	} else {
-		print(m)
+		//log.Print(m)
 	}
 }
 
