@@ -2,77 +2,81 @@ package day9
 
 import (
 	"aoc2023/internal/utils"
+	"log"
 	"strings"
 )
 
-type NodesMap = map[string]Node
-type NetworkInstructions = []string
-
-type Node struct {
-	Key   string
-	Left  string
-	Right string
-}
-
-var stepIndex int = 0
+type HistoryValuesMap = map[int]HistoryValues
+type HistoryValues = []int
 
 func CalculatePart1() int {
-	network, networkMap := initialValues()
-	startKey := "AAA"
-	destinationKey := "ZZZ"
+	historyValuesMap, totalValuesCount := initialValues()
+	predictions := getPredictions(historyValuesMap, totalValuesCount)
 
-	getStepsCount(startKey, network, networkMap, destinationKey)
+	log.Println(predictions)
 
-	return stepIndex
+	return 0
 }
 
-func getStepsCount(key string, network NetworkInstructions, networkMap NodesMap, destination string) {
-	if destination != key {
-		if stepIndex >= len(network) {
-			network = append(network, network...)
+func prediction(m []int, b bool) {
+	var n []int
+	var lastIsZero bool
+
+	if !b {
+		for i, v := range m {
+			if i+1 < len(m) {
+				diff := m[i+1] - v
+
+				if diff == 0 {
+					lastIsZero = true
+				} else {
+					lastIsZero = false
+				}
+
+				n = append(n, diff)
+			} else {
+				break
+			}
 		}
 
-		direction := string(network[stepIndex])
-		stepIndex += 1
-
-		if direction == "L" {
-			getStepsCount(networkMap[key].Left, network, networkMap, destination)
-		} else {
-			getStepsCount(networkMap[key].Right, network, networkMap, destination)
-		}
+		log.Print(n, lastIsZero)
+		prediction(n, lastIsZero)
+	} else {
+		print(m)
 	}
 }
 
-func initialValues() (NetworkInstructions, NodesMap) {
-	var network NetworkInstructions
-	var networkMap = make(NodesMap)
+func getPredictions(m HistoryValuesMap, count int) []int {
+	var predictions []int
 
-	content := utils.ReadInput("./assets/day8input.txt")
+	for i := 0; i < count; i++ {
+		var history []int
+		history = m[i]
+
+		prediction(history, false)
+	}
+
+	return predictions
+}
+
+func initialValues() (HistoryValuesMap, int) {
+	var totalValuesCount int
+	var historyValuesMap = make(HistoryValuesMap)
+
+	content := utils.ReadInput("./assets/day9input.txt")
 	rows := strings.Split(string(content), "\n")
 
 	for i, row := range rows {
-		if i == 0 {
-			for _, char := range row {
-				network = append(network, string(char))
-			}
+		var values []int
+		valuesStrings := strings.Split(row, " ")
+
+		for _, value := range valuesStrings {
+			values = append(values, utils.StringToInt(value))
 		}
 
-		if len(row) > 0 && i != 0 {
-			slices := strings.Split(row, " = ")
-			key := slices[0]
-			stringValues := slices[1]
-			stringValues = strings.TrimLeft(stringValues, "(")
-			stringValues = strings.TrimRight(stringValues, ")")
-			values := strings.Split(stringValues, ", ")
-
-			node := Node{
-				Key:   key,
-				Left:  values[0],
-				Right: values[1],
-			}
-			networkMap[key] = node
-		}
+		historyValuesMap[i] = values
+		totalValuesCount += 1
 	}
 
-	return network, networkMap
+	return historyValuesMap, totalValuesCount
 }
