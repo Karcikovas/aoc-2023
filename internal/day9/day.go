@@ -18,7 +18,25 @@ func CalculatePart1() int {
 	return 0
 }
 
-func prediction(m []int, b bool) {
+var historyMap = make(HistoryValuesMap)
+
+func getPredictions(m HistoryValuesMap, count int) []int {
+	var predictions []int
+
+	for i := 0; i < count; i++ {
+		var history []int
+		history = m[i]
+
+		log.Print(history)
+		historyMap[0] = history
+		prediction(history, false, 0)
+		log.Print(historyMap)
+	}
+
+	return predictions
+}
+
+func prediction(m []int, b bool, i int) {
 	var n []int
 	var lastIsZero bool
 
@@ -34,24 +52,9 @@ func prediction(m []int, b bool) {
 			}
 		}
 
-		log.Print(n)
-		prediction(n, lastIsZero)
-	} else {
-		//log.Print(m)
+		historyMap[i+1] = n
+		prediction(n, lastIsZero, i+1)
 	}
-}
-
-func getPredictions(m HistoryValuesMap, count int) []int {
-	var predictions []int
-
-	for i := 0; i < count; i++ {
-		var history []int
-		history = m[i]
-
-		prediction(history, false)
-	}
-
-	return predictions
 }
 
 func initialValues() (HistoryValuesMap, int) {
