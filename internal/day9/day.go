@@ -2,6 +2,7 @@ package day9
 
 import (
 	"aoc2023/internal/utils"
+	"log"
 	"strings"
 )
 
@@ -21,66 +22,63 @@ func CalculatePart1() int {
 	return totalSum
 }
 
-var historyMap = make(HistoryValuesMap)
-
 func getPredictions(m HistoryValuesMap, count int) []int {
 	var predictions []int
 
 	for i := 0; i < count; i++ {
-		var history []int
-		history = m[i]
+		var sequence [][]int
 
-		historyMap[0] = history
-		prediction(history, false, 0)
+		sequence = append(sequence, m[i])
 
-		count := 0
-		for _ = range historyMap {
-			count++
-		}
+		allZeroes := false
 
-		for c := count; c > 0; c-- {
-			idx := c - 1
-			collection := historyMap[idx]
-			l := len(collection)
-			lastValue := collection[l-1]
+		for !allZeroes {
+			seq := sequence[len(sequence)-1]
+			newSeq := generateSequence(seq)
 
-			if c == count {
-				historyMap[idx] = append(historyMap[idx], 0)
-			} else {
-				collectionBefore := historyMap[c]
-				valueBefore := collectionBefore[len(collectionBefore)-1]
+			sequence = append(sequence, newSeq)
 
-				historyMap[idx] = append(historyMap[idx], lastValue+valueBefore)
+			if allZero(newSeq) {
+				allZeroes = true
 			}
 		}
 
-		lCol := historyMap[0]
+		count := 0
+		for _ = range sequence {
+			count++
+		}
 
-		predictions = append(predictions, lCol[len(lCol)-1])
+		sum := 0
+		prev := 0
+		for c := count - 2; c >= 0; c-- {
+			num := prev + sequence[c][len(sequence[c])-2]
+			prev = num
+			sum += num
+		}
+
+		log.Println(sequence)
+		predictions = append(predictions, sum)
 	}
 
 	return predictions
 }
 
-func prediction(m []int, b bool, i int) {
-	var n []int
-	var lastIsZero bool
-
-	if !b {
-		for i, v := range m {
-			if i+1 < len(m) {
-				diff := m[i+1] - v
-				lastIsZero = diff == 0
-
-				n = append(n, diff)
-			} else {
-				break
-			}
-		}
-
-		historyMap[i+1] = n
-		prediction(n, lastIsZero, i+1)
+func generateSequence(numbers []int) []int {
+	var seq []int
+	for i := 1; i < len(numbers); i++ {
+		seq = append(seq, numbers[i]-numbers[i-1])
 	}
+
+	return seq
+}
+
+func allZero(s []int) bool {
+	for _, v := range s {
+		if v != 0 {
+			return false
+		}
+	}
+	return true
 }
 
 func initialValues() (HistoryValuesMap, int) {
