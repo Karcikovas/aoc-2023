@@ -15,7 +15,6 @@ func CalculatePart1() int {
 	predictions := getPredictions(historyValuesMap, totalValuesCount)
 
 	for _, v := range predictions {
-
 		totalSum = totalSum + v
 	}
 
