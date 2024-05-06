@@ -2,7 +2,6 @@ package day9
 
 import (
 	"aoc2023/internal/utils"
-	"log"
 	"strings"
 )
 
@@ -10,12 +9,16 @@ type HistoryValuesMap = map[int]HistoryValues
 type HistoryValues = []int
 
 func CalculatePart1() int {
+	var totalSum int
 	historyValuesMap, totalValuesCount := initialValues()
 	predictions := getPredictions(historyValuesMap, totalValuesCount)
 
-	log.Println(predictions)
+	for _, v := range predictions {
 
-	return 0
+		totalSum = totalSum + v
+	}
+
+	return totalSum
 }
 
 var historyMap = make(HistoryValuesMap)
@@ -27,10 +30,33 @@ func getPredictions(m HistoryValuesMap, count int) []int {
 		var history []int
 		history = m[i]
 
-		log.Print(history)
 		historyMap[0] = history
 		prediction(history, false, 0)
-		log.Print(historyMap)
+
+		count := 0
+		for _ = range historyMap {
+			count++
+		}
+
+		for c := count; c > 0; c-- {
+			idx := c - 1
+			collection := historyMap[idx]
+			l := len(collection)
+			lastValue := collection[l-1]
+
+			if c == count {
+				historyMap[idx] = append(historyMap[idx], 0)
+			} else {
+				collectionBefore := historyMap[c]
+				valueBefore := collectionBefore[len(collectionBefore)-1]
+
+				historyMap[idx] = append(historyMap[idx], lastValue+valueBefore)
+			}
+		}
+
+		lCol := historyMap[0]
+
+		predictions = append(predictions, lCol[len(lCol)-1])
 	}
 
 	return predictions
