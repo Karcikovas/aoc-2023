@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	totalPointSum := day10.CalculatePart1()
+	totalAmountOfSteps := day10.CalculatePart1()
 
-	log.Print("Day 10 result Part1 sum of extrapolated values: ", totalPointSum)
+	log.Print("Day 10 result Part1 steps along loop it takes: ", totalAmountOfSteps)
 }
