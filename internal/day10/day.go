@@ -8,7 +8,7 @@ import (
 
 const (
 	VerticalPipe   = "|"
-	HorizontalPipe = "F"
+	HorizontalPipe = "-"
 	NEBend         = "L"
 	NWBend         = "J"
 	SWBend         = "7"
@@ -33,51 +33,205 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 	var LoopItems []string
 	var loopIsCompleted = false
 	var location = start
+	var prevValue Coordinates
+
+	LoopItems = append(LoopItems, start.value)
 
 	for !loopIsCompleted {
 		//When whole loop is completed
-		if len(LoopItems) != 0 && location.value == Start {
+		if len(LoopItems) != 1 && location.value == Start {
 			LoopItems = append(LoopItems, location.value)
 			loopIsCompleted = true
 
 			break
 		}
 
-		log.Println(location)
+		log.Println("New has been started: ", location)
 		//Top check
-		if location.y > 0 {
-			topValue := pipes[location.y-1][location.x]
+		if location.y-1 > 0 {
+			newY := location.y - 1
+			topValue := pipes[newY][location.x]
 
 			log.Println(topValue)
+
+			if topValue == VerticalPipe && topValue != prevValue.value {
+				prevValue = location
+				location = Coordinates{
+					y:     newY,
+					x:     location.x,
+					value: topValue,
+				}
+
+				LoopItems = append(LoopItems, topValue)
+
+				continue
+			}
+
+			if topValue == SEBend && topValue != prevValue.value {
+				prevValue = location
+				location = Coordinates{
+					y:     newY,
+					x:     location.x - 1,
+					value: topValue,
+				}
+
+				LoopItems = append(LoopItems, topValue)
+
+				continue
+			}
+
+			if topValue == SWBend && topValue != prevValue.value {
+				prevValue = location
+				location = Coordinates{
+					y:     newY,
+					x:     location.x + 1,
+					value: topValue,
+				}
+
+				LoopItems = append(LoopItems, topValue)
+
+				continue
+			}
 		}
 
 		//Bottom check
-		if location.y < len(pipes) {
+		if location.y+1 < len(pipes) {
 			newY := location.y + 1
 			bottomValue := pipes[newY][location.x]
 
-			log.Println(bottomValue)
-
-			if bottomValue == "|" {
+			if bottomValue == VerticalPipe && bottomValue != prevValue.value {
+				prevValue = location
 				location = Coordinates{
 					y:     newY,
 					x:     location.x,
 					value: bottomValue,
 				}
 
+				LoopItems = append(LoopItems, bottomValue)
 				continue
 			}
 
-			if bottomValue == "L" {
-				log.Println(bottomValue)
-				break
+			if bottomValue == NWBend && bottomValue != prevValue.value {
+				prevValue = location
+
+				location = Coordinates{
+					y:     newY,
+					x:     location.x,
+					value: bottomValue,
+				}
+
+				LoopItems = append(LoopItems, bottomValue)
+				continue
+			}
+
+			if bottomValue == NEBend && bottomValue != prevValue.value {
+				prevValue = location
+
+				location = Coordinates{
+					y:     newY,
+					x:     location.x,
+					value: bottomValue,
+				}
+
+				LoopItems = append(LoopItems, bottomValue)
+				continue
+			}
+		}
+
+		//Left check
+		if location.x-1 >= 0 {
+			newX := location.x - 1
+			leftValue := pipes[location.y][newX]
+
+			if leftValue == NEBend && leftValue != prevValue.value {
+				prevValue = location
+
+				location = Coordinates{
+					y:     location.y,
+					x:     newX,
+					value: leftValue,
+				}
+
+				LoopItems = append(LoopItems, leftValue)
+				continue
+			}
+
+			if leftValue == HorizontalPipe && leftValue != prevValue.value {
+				prevValue = location
+
+				location = Coordinates{
+					y:     location.y,
+					x:     newX,
+					value: leftValue,
+				}
+
+				LoopItems = append(LoopItems, leftValue)
+				continue
+			}
+
+			if leftValue == SEBend && leftValue != prevValue.value {
+				prevValue = location
+
+				location = Coordinates{
+					y:     location.y,
+					x:     newX,
+					value: leftValue,
+				}
+
+				LoopItems = append(LoopItems, leftValue)
+				continue
+			}
+		}
+
+		//Right check
+		if location.x+1 < len(pipes[location.y]) {
+			newX := location.x + 1
+			rightValue := pipes[location.y][newX]
+
+			if rightValue == NWBend && rightValue != prevValue.value {
+				prevValue = location
+
+				location = Coordinates{
+					y:     location.y,
+					x:     newX,
+					value: rightValue,
+				}
+
+				LoopItems = append(LoopItems, rightValue)
+				continue
+			}
+
+			if rightValue == HorizontalPipe && rightValue != prevValue.value {
+				prevValue = location
+
+				location = Coordinates{
+					y:     location.y,
+					x:     newX,
+					value: rightValue,
+				}
+
+				LoopItems = append(LoopItems, rightValue)
+				continue
+			}
+
+			if rightValue == SWBend && rightValue != prevValue.value {
+				prevValue = location
+
+				location = Coordinates{
+					y:     location.y,
+					x:     newX,
+					value: rightValue,
+				}
+
+				LoopItems = append(LoopItems, rightValue)
+				continue
 			}
 		}
 
 		loopIsCompleted = true
 	}
 
-	log.Println(len(pipes), start)
+	log.Println(LoopItems)
 
 }
 
