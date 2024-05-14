@@ -24,10 +24,12 @@ var LeftCombinations = []string{Start, HorizontalPipe, SEBend, NEBend}
 var RightCombinations = []string{Start, HorizontalPipe, SWBend, NWBend}
 
 type Node struct {
-	name  string
-	x     int
-	y     int
-	value string
+	name      string
+	x         int
+	y         int
+	value     string
+	neighbors []*Node
+	visited   bool
 }
 
 func CalculatePart1() int {
@@ -37,24 +39,55 @@ func CalculatePart1() int {
 
 	return 0
 }
+func getOrCreateNode(pipes [][]Node, x int, y int, parentNode *Node) Node {
+	node := pipes[y][x]
+
+	count := 0
+	for _, neighbor := range node.neighbors {
+		if neighbor.name == parentNode.name {
+			count++
+		}
+	}
+
+	if count == 0 {
+		node.neighbors = append(node.neighbors, parentNode)
+	}
+
+	return node
+}
+
+func createNeighborNode(pipes [][]Node, x int, y int, parentNode *Node) (*Node, error) {
+	node := getOrCreateNode(pipes, x, y, parentNode)
+
+	count := 0
+	for _, neighbor := range node.neighbors {
+		if neighbor.name == parentNode.name {
+			count++
+		}
+	}
+	if count > 0 {
+		return nil, fmt.Errorf("node with same name as parent node already exists")
+	}
+
+	return &node, nil
+}
 
 func isParent(currX int, currY int, parentX int, parentY int) bool {
 	return currX == parentX && currY == parentY
 }
 
 func isPossibleNeighbor(pipes [][]Node, x int, y int, fromX int, fromY int, combinator []string) bool {
-
-	if x >= 0 && y >= 0 {
-		if len(pipes[y]) == 0 {
-			return false
-		} else {
-			targetNode := pipes[y][x]
-
-			return slices.Contains(combinator, targetNode.value) && !isParent(x, y, fromX, fromY)
-		}
-	} else {
+	if y < 0 || y >= len(pipes) {
 		return false
 	}
+
+	if x < 0 || x >= len(pipes[y]) {
+		return false
+	}
+
+	targetNode := pipes[y][x]
+
+	return slices.Contains(combinator, targetNode.value) && !isParent(x, y, fromX, fromY)
 }
 
 func getPipeLoopItems(pipes [][]Node, start Node) {
@@ -65,19 +98,43 @@ func getPipeLoopItems(pipes [][]Node, start Node) {
 		n := stack.Pop()
 
 		if isPossibleNeighbor(pipes, n.x, n.y-1, start.x, start.y, UpCombinations) {
-			log.Println("UpCombination")
+			neighbor, err := createNeighborNode(pipes, n.x, n.y-1, &n)
+
+			if err != nil {
+				stack.Push(*neighbor)
+			}
+
+			log.Println("UpCombination", neighbor)
 		}
 
 		if isPossibleNeighbor(pipes, n.x, n.y+1, start.x, start.y, DownCombinations) {
-			log.Println("DownCombination")
+			neighbor, err := createNeighborNode(pipes, n.x, n.y+1, &n)
+
+			if err != nil {
+				stack.Push(*neighbor)
+			}
+
+			log.Println("DownCombination", neighbor)
 		}
 
 		if isPossibleNeighbor(pipes, n.x-1, n.y, start.x, start.y, LeftCombinations) {
-			log.Println("LeftCombination")
+			neighbor, err := createNeighborNode(pipes, n.x-1, n.y, &n)
+
+			if err != nil {
+				stack.Push(*neighbor)
+			}
+
+			log.Println("LeftCombination", neighbor)
 		}
 
 		if isPossibleNeighbor(pipes, n.x+1, n.y, start.x, start.y, RightCombinations) {
-			log.Println("RightCombination")
+			neighbor, err := createNeighborNode(pipes, n.x+1, n.y, &n)
+
+			if err != nil {
+				stack.Push(*neighbor)
+			}
+
+			log.Println("RightCombination", neighbor)
 		}
 	}
 }
