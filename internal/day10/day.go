@@ -4,7 +4,6 @@ import (
 	"aoc2023/internal/utils"
 	"fmt"
 	"log"
-	"slices"
 	"strings"
 )
 
@@ -25,225 +24,29 @@ var RightCombinations = []string{Start, HorizontalPipe, SWBend, NWBend}
 
 type Node struct {
 	name  string
-	y     int
 	x     int
+	y     int
 	value string
 }
 
 func CalculatePart1() int {
 	nodes, start := initialValues()
 
-	log.Println(nodes, start)
-	//getPipeLoopItems(pipes, start)
+	getPipeLoopItems(nodes, start)
 
 	return 0
 }
 
-func getPipeLoopItems(pipes [][]string, start Node) {
-	var LoopItems []string
-	var loopIsCompleted = false
-	var location = start
-	var prevValue Node
+func getPipeLoopItems(pipes [][]Node, start Node) {
+	var stack utils.Container[Node] = &utils.Stack[Node]{}
 
-	LoopItems = append(LoopItems, start.value)
-	log.Println(slices.Contains(UpCombinations, HorizontalPipe))
+	stack.Push(start)
+	stack.Len()
 
-	for !loopIsCompleted {
-		//When whole loop is completed
-		if len(LoopItems) != 1 && location.value == Start {
-			LoopItems = append(LoopItems, location.value)
-			loopIsCompleted = true
-
-			break
-		}
-
-		log.Println("New has been started: ", location)
-		//Top check
-		if location.y-1 > 0 {
-			newY := location.y - 1
-			topValue := pipes[newY][location.x]
-
-			log.Println(topValue)
-
-			if topValue == VerticalPipe && topValue != prevValue.value {
-				prevValue = location
-				location = Node{
-					y:     newY,
-					x:     location.x,
-					value: topValue,
-				}
-
-				LoopItems = append(LoopItems, topValue)
-
-				continue
-			}
-
-			if topValue == SEBend && topValue != prevValue.value {
-				prevValue = location
-				location = Node{
-					y:     newY,
-					x:     location.x - 1,
-					value: topValue,
-				}
-
-				LoopItems = append(LoopItems, topValue)
-
-				continue
-			}
-
-			if topValue == SWBend && topValue != prevValue.value {
-				prevValue = location
-				location = Node{
-					y:     newY,
-					x:     location.x + 1,
-					value: topValue,
-				}
-
-				LoopItems = append(LoopItems, topValue)
-
-				continue
-			}
-		}
-
-		//Bottom check
-		if location.y+1 < len(pipes) {
-			newY := location.y + 1
-			bottomValue := pipes[newY][location.x]
-
-			if bottomValue == VerticalPipe && bottomValue != prevValue.value {
-				prevValue = location
-				location = Node{
-					y:     newY,
-					x:     location.x,
-					value: bottomValue,
-				}
-
-				LoopItems = append(LoopItems, bottomValue)
-				continue
-			}
-
-			if bottomValue == NWBend && bottomValue != prevValue.value {
-				prevValue = location
-
-				location = Node{
-					y:     newY,
-					x:     location.x,
-					value: bottomValue,
-				}
-
-				LoopItems = append(LoopItems, bottomValue)
-				continue
-			}
-
-			if bottomValue == NEBend && bottomValue != prevValue.value {
-				prevValue = location
-
-				location = Node{
-					y:     newY,
-					x:     location.x,
-					value: bottomValue,
-				}
-
-				LoopItems = append(LoopItems, bottomValue)
-				continue
-			}
-		}
-
-		//Left check
-		if location.x-1 >= 0 {
-			newX := location.x - 1
-			leftValue := pipes[location.y][newX]
-
-			if leftValue == NEBend && leftValue != prevValue.value {
-				prevValue = location
-
-				location = Node{
-					y:     location.y,
-					x:     newX,
-					value: leftValue,
-				}
-
-				LoopItems = append(LoopItems, leftValue)
-				continue
-			}
-
-			if leftValue == HorizontalPipe && leftValue != prevValue.value {
-				prevValue = location
-
-				location = Node{
-					y:     location.y,
-					x:     newX,
-					value: leftValue,
-				}
-
-				LoopItems = append(LoopItems, leftValue)
-				continue
-			}
-
-			if leftValue == SEBend && leftValue != prevValue.value {
-				prevValue = location
-
-				location = Node{
-					y:     location.y,
-					x:     newX,
-					value: leftValue,
-				}
-
-				LoopItems = append(LoopItems, leftValue)
-				continue
-			}
-		}
-
-		//Right check
-		if location.x+1 < len(pipes[location.y]) {
-			newX := location.x + 1
-			rightValue := pipes[location.y][newX]
-
-			if rightValue == NWBend && rightValue != prevValue.value {
-				prevValue = location
-
-				location = Node{
-					y:     location.y,
-					x:     newX,
-					value: rightValue,
-				}
-
-				LoopItems = append(LoopItems, rightValue)
-				continue
-			}
-
-			if rightValue == HorizontalPipe && rightValue != prevValue.value {
-				prevValue = location
-
-				location = Node{
-					y:     location.y,
-					x:     newX,
-					value: rightValue,
-				}
-
-				LoopItems = append(LoopItems, rightValue)
-				continue
-			}
-
-			if rightValue == SWBend && rightValue != prevValue.value {
-				prevValue = location
-
-				location = Node{
-					y:     location.y,
-					x:     newX,
-					value: rightValue,
-				}
-
-				LoopItems = append(LoopItems, rightValue)
-				continue
-			}
-		}
-
-		loopIsCompleted = true
+	for stack.Len() != 0 {
+		n := stack.Pop()
+		log.Println(n)
 	}
-
-	log.Println(LoopItems)
-
 }
 
 func getNodeName(x int, y int) string {
