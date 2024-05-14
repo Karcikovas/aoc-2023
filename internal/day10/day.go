@@ -2,40 +2,51 @@ package day10
 
 import (
 	"aoc2023/internal/utils"
+	"fmt"
 	"log"
+	"slices"
 	"strings"
 )
 
 const (
+	Start          = "S"
 	VerticalPipe   = "|"
 	HorizontalPipe = "-"
 	NEBend         = "L"
 	NWBend         = "J"
 	SWBend         = "7"
 	SEBend         = "F"
-	Start          = "S"
 )
 
-type Coordinates struct {
+var UpCombinations = []string{Start, SWBend, SEBend, VerticalPipe}
+var DownCombinations = []string{Start, NEBend, NWBend, VerticalPipe}
+var LeftCombinations = []string{Start, HorizontalPipe, SEBend, NEBend}
+var RightCombinations = []string{Start, HorizontalPipe, SWBend, NWBend}
+
+type Node struct {
+	name  string
 	y     int
 	x     int
 	value string
 }
 
 func CalculatePart1() int {
-	pipes, start := initialValues()
-	getPipeLoopItems(pipes, start)
+	nodes, start := initialValues()
+
+	log.Println(nodes, start)
+	//getPipeLoopItems(pipes, start)
 
 	return 0
 }
 
-func getPipeLoopItems(pipes [][]string, start Coordinates) {
+func getPipeLoopItems(pipes [][]string, start Node) {
 	var LoopItems []string
 	var loopIsCompleted = false
 	var location = start
-	var prevValue Coordinates
+	var prevValue Node
 
 	LoopItems = append(LoopItems, start.value)
+	log.Println(slices.Contains(UpCombinations, HorizontalPipe))
 
 	for !loopIsCompleted {
 		//When whole loop is completed
@@ -56,7 +67,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 
 			if topValue == VerticalPipe && topValue != prevValue.value {
 				prevValue = location
-				location = Coordinates{
+				location = Node{
 					y:     newY,
 					x:     location.x,
 					value: topValue,
@@ -69,7 +80,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 
 			if topValue == SEBend && topValue != prevValue.value {
 				prevValue = location
-				location = Coordinates{
+				location = Node{
 					y:     newY,
 					x:     location.x - 1,
 					value: topValue,
@@ -82,7 +93,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 
 			if topValue == SWBend && topValue != prevValue.value {
 				prevValue = location
-				location = Coordinates{
+				location = Node{
 					y:     newY,
 					x:     location.x + 1,
 					value: topValue,
@@ -101,7 +112,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 
 			if bottomValue == VerticalPipe && bottomValue != prevValue.value {
 				prevValue = location
-				location = Coordinates{
+				location = Node{
 					y:     newY,
 					x:     location.x,
 					value: bottomValue,
@@ -114,7 +125,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 			if bottomValue == NWBend && bottomValue != prevValue.value {
 				prevValue = location
 
-				location = Coordinates{
+				location = Node{
 					y:     newY,
 					x:     location.x,
 					value: bottomValue,
@@ -127,7 +138,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 			if bottomValue == NEBend && bottomValue != prevValue.value {
 				prevValue = location
 
-				location = Coordinates{
+				location = Node{
 					y:     newY,
 					x:     location.x,
 					value: bottomValue,
@@ -146,7 +157,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 			if leftValue == NEBend && leftValue != prevValue.value {
 				prevValue = location
 
-				location = Coordinates{
+				location = Node{
 					y:     location.y,
 					x:     newX,
 					value: leftValue,
@@ -159,7 +170,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 			if leftValue == HorizontalPipe && leftValue != prevValue.value {
 				prevValue = location
 
-				location = Coordinates{
+				location = Node{
 					y:     location.y,
 					x:     newX,
 					value: leftValue,
@@ -172,7 +183,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 			if leftValue == SEBend && leftValue != prevValue.value {
 				prevValue = location
 
-				location = Coordinates{
+				location = Node{
 					y:     location.y,
 					x:     newX,
 					value: leftValue,
@@ -191,7 +202,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 			if rightValue == NWBend && rightValue != prevValue.value {
 				prevValue = location
 
-				location = Coordinates{
+				location = Node{
 					y:     location.y,
 					x:     newX,
 					value: rightValue,
@@ -204,7 +215,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 			if rightValue == HorizontalPipe && rightValue != prevValue.value {
 				prevValue = location
 
-				location = Coordinates{
+				location = Node{
 					y:     location.y,
 					x:     newX,
 					value: rightValue,
@@ -217,7 +228,7 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 			if rightValue == SWBend && rightValue != prevValue.value {
 				prevValue = location
 
-				location = Coordinates{
+				location = Node{
 					y:     location.y,
 					x:     newX,
 					value: rightValue,
@@ -235,26 +246,40 @@ func getPipeLoopItems(pipes [][]string, start Coordinates) {
 
 }
 
-func initialValues() ([][]string, Coordinates) {
-	var pipes [][]string
-	var start Coordinates
+func getNodeName(x int, y int) string {
+	return fmt.Sprintf("%d-%d", x, y)
+}
+
+func initialValues() ([][]Node, Node) {
+	var nodes [][]Node
+	var startNode Node
 	content := utils.ReadInput("./assets/day10input.txt")
 	rows := strings.Split(string(content), "\n")
 
 	for y, row := range rows {
 		startIndex := strings.Index(row, "S")
-		items := strings.Split(row, "")
 
-		pipes = append(pipes, items)
+		nodes = append(nodes, make([]Node, 0))
 
 		if startIndex >= 0 {
-			start = Coordinates{
+			startNode = Node{
 				y:     y,
 				x:     startIndex,
-				value: "S",
+				value: Start,
+				name:  getNodeName(startIndex, y),
+			}
+		} else {
+			for x, value := range row {
+				node := Node{
+					y:     y,
+					x:     x,
+					value: string(value),
+					name:  getNodeName(x, y),
+				}
+				nodes[y] = append(nodes[y], node)
 			}
 		}
 	}
 
-	return pipes, start
+	return nodes, startNode
 }
