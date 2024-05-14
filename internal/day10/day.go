@@ -45,10 +45,13 @@ func isParent(currX int, currY int, parentX int, parentY int) bool {
 func isPossibleNeighbor(pipes [][]Node, x int, y int, fromX int, fromY int, combinator []string) bool {
 
 	if x >= 0 && y >= 0 {
-		log.Println(y, x, pipes[y])
-		targetNode := pipes[y][x]
+		if len(pipes[y]) == 0 {
+			return false
+		} else {
+			targetNode := pipes[y][x]
 
-		return slices.Contains(combinator, targetNode.value) && !isParent(x, y, fromX, fromY)
+			return slices.Contains(combinator, targetNode.value) && !isParent(x, y, fromX, fromY)
+		}
 	} else {
 		return false
 	}
