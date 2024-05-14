@@ -4,6 +4,7 @@ import (
 	"aoc2023/internal/utils"
 	"fmt"
 	"log"
+	"slices"
 	"strings"
 )
 
@@ -37,15 +38,44 @@ func CalculatePart1() int {
 	return 0
 }
 
+func isParent(currX int, currY int, parentX int, parentY int) bool {
+	return currX == parentX && currY == parentY
+}
+
+func isPossibleNeighbor(pipes [][]Node, x int, y int, fromX int, fromY int, combinator []string) bool {
+
+	if x >= 0 && y >= 0 {
+		log.Println(y, x, pipes[y])
+		targetNode := pipes[y][x]
+
+		return slices.Contains(combinator, targetNode.value) && !isParent(x, y, fromX, fromY)
+	} else {
+		return false
+	}
+}
+
 func getPipeLoopItems(pipes [][]Node, start Node) {
 	var stack utils.Container[Node] = &utils.Stack[Node]{}
-
 	stack.Push(start)
-	stack.Len()
 
 	for stack.Len() != 0 {
 		n := stack.Pop()
-		log.Println(n)
+
+		if isPossibleNeighbor(pipes, n.x, n.y-1, start.x, start.y, UpCombinations) {
+			log.Println("UpCombination")
+		}
+
+		if isPossibleNeighbor(pipes, n.x, n.y+1, start.x, start.y, DownCombinations) {
+			log.Println("DownCombination")
+		}
+
+		if isPossibleNeighbor(pipes, n.x-1, n.y, start.x, start.y, LeftCombinations) {
+			log.Println("LeftCombination")
+		}
+
+		if isPossibleNeighbor(pipes, n.x+1, n.y, start.x, start.y, RightCombinations) {
+			log.Println("RightCombination")
+		}
 	}
 }
 
