@@ -3,7 +3,6 @@ package day10
 import (
 	"aoc2023/internal/utils"
 	"fmt"
-	"log"
 	"slices"
 	"strings"
 )
@@ -104,7 +103,6 @@ func getPipeLoopItems(pipes [][]Node, start Node) {
 
 			if err == nil {
 				stack.Push(*neighbor)
-				log.Println("is Up Neighbor!")
 
 				continue
 			}
@@ -115,7 +113,6 @@ func getPipeLoopItems(pipes [][]Node, start Node) {
 
 			if err == nil {
 				stack.Push(*neighbor)
-				log.Println("is Down Neighbor!")
 
 				continue
 			}
@@ -126,7 +123,6 @@ func getPipeLoopItems(pipes [][]Node, start Node) {
 
 			if err == nil {
 				stack.Push(*neighbor)
-				log.Println("is Left Neighbor!")
 
 				continue
 			}
@@ -137,7 +133,7 @@ func getPipeLoopItems(pipes [][]Node, start Node) {
 
 			if err == nil {
 				stack.Push(*neighbor)
-				log.Println("is Right Neighbor!")
+
 				continue
 			}
 		}
