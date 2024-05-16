@@ -17,10 +17,9 @@ func (s *Stack[T]) Push(value T) {
 }
 
 func (s *Stack[T]) Pop() T {
-	//if len(*s) == 0 {
-	//	return nil, errors.New("empty stack")
-	//}
-	value := (*s)[len(*s)-1]
+	old := *s
+	n := len(old)
+	item := old[n-1]
 	*s = (*s)[:len(*s)-1]
-	return value
+	return item
 }
