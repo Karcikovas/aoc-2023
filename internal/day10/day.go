@@ -17,11 +17,15 @@ const (
 	SWBend         = "7"
 )
 
-var UpCombinations = []string{Start, SWBend, SEBend, VerticalPipe}
-var DownCombinations = []string{Start, NEBend, NWBend, VerticalPipe}
+var TargetUpCombinations = []string{Start, SWBend, SEBend, VerticalPipe}
+var TargetDownCombinations = []string{Start, NEBend, NWBend, VerticalPipe}
+var TargetLeftCombinations = []string{Start, HorizontalPipe, SEBend, NEBend}
+var TargetRightCombinations = []string{Start, HorizontalPipe, SWBend, NWBend}
 
-var LeftCombinations = []string{Start, HorizontalPipe, SEBend, NEBend}
-var RightCombinations = []string{Start, HorizontalPipe, SWBend, NWBend}
+var ParentUpConnectors = []string{Start, VerticalPipe, NWBend, NEBend}
+var ParentDownConnectors = []string{Start, VerticalPipe, SWBend, SEBend}
+var ParentLeftConnectors = []string{Start, HorizontalPipe, NWBend, SWBend}
+var ParentRightConnectors = []string{Start, HorizontalPipe, SEBend, NEBend}
 
 type Node struct {
 	name      string
@@ -35,9 +39,9 @@ type Node struct {
 func CalculatePart1() int {
 	nodes, start := initialValues()
 
-	getPipeLoopItems(nodes, start)
+	steps := getPipeLoopItems(nodes, start)
 
-	return 0
+	return len(steps) / 2
 }
 func getOrCreateNode(pipes [][]Node, x int, y int, parentNode *Node) Node {
 	node := pipes[y][x]
@@ -77,7 +81,7 @@ func isParent(currX int, currY int, parentX int, parentY int) bool {
 	return currX == parentX && currY == parentY
 }
 
-func isPossibleNeighbor(pipes [][]Node, x int, y int, fromX int, fromY int, combinator []string) bool {
+func isPossibleNeighbor(pipes [][]Node, parrent Node, x int, y int, fromX int, fromY int, combinator []string, connector []string) bool {
 	if y < 0 || y >= len(pipes) {
 		return false
 	}
@@ -88,17 +92,21 @@ func isPossibleNeighbor(pipes [][]Node, x int, y int, fromX int, fromY int, comb
 
 	targetNode := pipes[y][x]
 
-	return slices.Contains(combinator, targetNode.value) && !isParent(x, y, fromX, fromY)
+	var possibleConnectionAndCombination = slices.Contains(connector, parrent.value) && slices.Contains(combinator, targetNode.value)
+
+	return possibleConnectionAndCombination && !isParent(x, y, fromX, fromY)
 }
 
-func getPipeLoopItems(pipes [][]Node, start Node) {
+func getPipeLoopItems(pipes [][]Node, start Node) []string {
+	var steps []string
 	var stack utils.Container[Node] = &utils.Stack[Node]{}
 	stack.Push(start)
 
 	for stack.Len() != 0 {
 		n := stack.Pop()
+		steps = append(steps, n.value)
 
-		if isPossibleNeighbor(pipes, n.x, n.y-1, start.x, start.y, UpCombinations) {
+		if isPossibleNeighbor(pipes, n, n.x, n.y-1, start.x, start.y, TargetUpCombinations, ParentUpConnectors) {
 			neighbor, err := createNeighborNode(pipes, n.x, n.y-1, &n)
 
 			if err == nil {
@@ -108,7 +116,7 @@ func getPipeLoopItems(pipes [][]Node, start Node) {
 			}
 		}
 
-		if isPossibleNeighbor(pipes, n.x, n.y+1, start.x, start.y, DownCombinations) {
+		if isPossibleNeighbor(pipes, n, n.x, n.y+1, start.x, start.y, TargetDownCombinations, ParentDownConnectors) {
 			neighbor, err := createNeighborNode(pipes, n.x, n.y+1, &n)
 
 			if err == nil {
@@ -118,7 +126,7 @@ func getPipeLoopItems(pipes [][]Node, start Node) {
 			}
 		}
 
-		if isPossibleNeighbor(pipes, n.x-1, n.y, start.x, start.y, LeftCombinations) {
+		if isPossibleNeighbor(pipes, n, n.x-1, n.y, start.x, start.y, TargetLeftCombinations, ParentLeftConnectors) {
 			neighbor, err := createNeighborNode(pipes, n.x-1, n.y, &n)
 
 			if err == nil {
@@ -128,7 +136,7 @@ func getPipeLoopItems(pipes [][]Node, start Node) {
 			}
 		}
 
-		if isPossibleNeighbor(pipes, n.x+1, n.y, start.x, start.y, RightCombinations) {
+		if isPossibleNeighbor(pipes, n, n.x+1, n.y, start.x, start.y, TargetRightCombinations, ParentRightConnectors) {
 			neighbor, err := createNeighborNode(pipes, n.x+1, n.y, &n)
 
 			if err == nil {
@@ -138,6 +146,8 @@ func getPipeLoopItems(pipes [][]Node, start Node) {
 			}
 		}
 	}
+
+	return steps
 }
 
 func getNodeName(x int, y int) string {
@@ -162,16 +172,16 @@ func initialValues() ([][]Node, Node) {
 				value: Start,
 				name:  getNodeName(startIndex, y),
 			}
-		} else {
-			for x, value := range row {
-				node := Node{
-					y:     y,
-					x:     x,
-					value: string(value),
-					name:  getNodeName(x, y),
-				}
-				nodes[y] = append(nodes[y], node)
+		}
+
+		for x, value := range row {
+			node := Node{
+				y:     y,
+				x:     x,
+				value: string(value),
+				name:  getNodeName(x, y),
 			}
+			nodes[y] = append(nodes[y], node)
 		}
 	}
 
