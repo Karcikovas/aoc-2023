@@ -39,7 +39,7 @@ func initialValues() {
 	rows := strings.Split(string(content), "\n")
 
 	for _, row := range rows {
-		startIndex := strings.Index(row, "#")
+		startIndex := strings.Index(row, string(Galaxies))
 
 		if startIndex < 0 {
 			q.Push(row)
