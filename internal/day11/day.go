@@ -32,18 +32,26 @@ func CalculatePart1() int {
 }
 
 func initialValues() {
+	var galaxies int = 0
 	q := utils.NewQueue()
-
-	//var spaceMap [][]Space
 	content := utils.ReadInput("./assets/day11input.txt")
 	rows := strings.Split(string(content), "\n")
 
 	for _, row := range rows {
-		startIndex := strings.Index(row, string(Galaxies))
+		galaxiesCount := checkSubstrings(row, string(Galaxies))
 
-		if startIndex < 0 {
+		if galaxiesCount > 0 {
+
 			q.Push(row)
+
+			galaxies = galaxies + 1
+
+			log.Println(galaxiesCount)
+
+			continue
 		}
+
+		q.Push(row)
 		q.Push(row)
 	}
 
@@ -52,4 +60,20 @@ func initialValues() {
 
 		log.Println(n)
 	}
+
+	pairAmount := utils.Combinations(9, 2)
+
+	log.Println(pairAmount, galaxies)
+}
+
+func checkSubstrings(str string, value string) int {
+	matches := 0
+
+	for _, char := range str {
+		if strings.Contains(string(char), value) {
+			matches += 1
+		}
+	}
+
+	return matches
 }
