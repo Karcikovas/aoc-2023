@@ -2,9 +2,6 @@ package day11
 
 import (
 	"aoc2023/internal/utils"
-	"fmt"
-	"gonum.org/v1/gonum/stat/combin"
-	"log"
 	"strings"
 )
 
@@ -13,8 +10,7 @@ const (
 	Galaxies   = '#'
 )
 
-type Space struct {
-	name     string
+type SpaceNode struct {
 	x        int
 	y        int
 	isGalaxy bool
@@ -22,25 +18,21 @@ type Space struct {
 }
 
 func CalculatePart1() int {
-	n := 9
-	k := 2
-	list := combin.Combinations(n, k)
-	fmt.Println(len(list))
-
 	initialValues()
 	return 0
 }
 
 func initialValues() {
 	var galaxies int
-	var grid []string
+	var spaceGrid []string
+	expandedCols := 0
 
 	content := utils.ReadInput("./assets/day11input.txt")
 	rows := strings.Split(content, "\n")
 
 	for _, row := range rows {
 		galaxiesCount := utils.CheckSubstrings(row, string(Galaxies))
-		grid = append(grid, row)
+		spaceGrid = append(spaceGrid, row)
 
 		if galaxiesCount > 0 {
 
@@ -48,25 +40,31 @@ func initialValues() {
 
 			continue
 		} else {
-			grid = append(grid, row)
+			spaceGrid = append(spaceGrid, row)
 		}
-
 	}
 
-	for row := 0; row < len(grid); row++ {
-		l := len(grid[row])
+	for col := 0; col < len(rows[0]); col++ {
+		empty := true
 
-		for col := 0; col < l; col++ {
-			log.Println(grid[row], l)
-			log.Println(string(grid[row][col]))
+		for x := 0; x < len(rows[0]); x++ {
+			if rows[col][x] == Galaxies {
+				empty = false
+				continue
+			}
 		}
 
-		//for col := 0; col < len(grid[row]); col++ {
-		//	fmt.Print(string(grid[row][col]), "--------")
-		//}
+		if empty {
+			for rowToUpdate := 0; rowToUpdate < len(spaceGrid); rowToUpdate++ {
+				updateStr := spaceGrid[rowToUpdate]
+
+				part1 := updateStr[:col+expandedCols]
+				part2 := updateStr[col+expandedCols:]
+
+				spaceGrid[rowToUpdate] = part1 + string(EmptySpace) + part2
+			}
+
+			expandedCols++
+		}
 	}
-
-	pairAmount := utils.Combinations(galaxies, 2)
-
-	log.Println(pairAmount, galaxies)
 }
