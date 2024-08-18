@@ -3,6 +3,7 @@ package day11
 import (
 	"aoc2023/internal/utils"
 	"log"
+	"math"
 	"strings"
 )
 
@@ -17,23 +18,35 @@ type Star struct {
 }
 
 func CalculatePart1() int {
-	spaceGrid, galaxies := initialValues()
+	spaceGrid := initialValues()
 	stars := createStartMap(spaceGrid)
 
-	log.Println(galaxies)
-
 	log.Println(stars)
-	return 0
+	sum := 0
+	for i := 0; i < len(stars); i++ {
+		for j := 0; j < len(stars); j++ {
+			if i == j {
+				continue
+			}
+			sum += manhattanDistance(stars[i], stars[j])
+		}
+	}
+
+	return sum / 2
+}
+
+func manhattanDistance(a, b Star) int {
+	return int(math.Abs(float64(a.x-b.x)) + math.Abs(float64(a.y-b.y)))
 }
 
 func createStartMap(spaceGrid []string) []Star {
 	var stars []Star
-	for x := range spaceGrid {
-		for y := 0; y < len(spaceGrid[x]); y++ {
-			if spaceGrid[x][y] == Galaxies {
+	for col := range spaceGrid {
+		for row := 0; row < len(spaceGrid[col]); row++ {
+			if spaceGrid[col][row] == Galaxies {
 				star := Star{
-					x: x,
-					y: y,
+					x: row,
+					y: col,
 				}
 
 				stars = append(stars, star)
@@ -44,7 +57,7 @@ func createStartMap(spaceGrid []string) []Star {
 	return stars
 }
 
-func initialValues() ([]string, int) {
+func initialValues() []string {
 	var galaxies int
 	var spaceGrid []string
 	expandedCols := 0
@@ -69,12 +82,12 @@ func initialValues() ([]string, int) {
 		}
 	}
 
-	return spaceGrid, galaxies
+	return spaceGrid
 }
 
 func isColumnEmpty(rows []string, col int) bool {
-	for x := 0; x < len(rows[0]); x++ {
-		if rows[col][x] == Galaxies {
+	for _, row := range rows {
+		if col >= len(row) || row[col] != EmptySpace {
 			return false
 		}
 	}
