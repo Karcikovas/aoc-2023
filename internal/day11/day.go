@@ -11,18 +11,37 @@ const (
 	Galaxies   = '#'
 )
 
-type SpaceNode struct {
-	x        int
-	y        int
-	isGalaxy bool
-	value    string
+type Star struct {
+	x int
+	y int
 }
 
 func CalculatePart1() int {
 	spaceGrid, galaxies := initialValues()
+	stars := createStartMap(spaceGrid)
 
-	log.Println(spaceGrid, galaxies)
+	log.Println(galaxies)
+
+	log.Println(stars)
 	return 0
+}
+
+func createStartMap(spaceGrid []string) []Star {
+	var stars []Star
+	for x := range spaceGrid {
+		for y := 0; y < len(spaceGrid[x]); y++ {
+			if spaceGrid[x][y] == Galaxies {
+				star := Star{
+					x: x,
+					y: y,
+				}
+
+				stars = append(stars, star)
+			}
+		}
+	}
+
+	return stars
 }
 
 func initialValues() ([]string, int) {
@@ -37,6 +56,10 @@ func initialValues() ([]string, int) {
 		galaxiesCount := utils.CheckSubstrings(row, string(Galaxies))
 		spaceGrid = append(spaceGrid, row)
 		galaxies += galaxiesCount
+
+		if galaxiesCount == 0 {
+			spaceGrid = append(spaceGrid, row)
+		}
 	}
 
 	for col := 0; col < len(rows[0]); col++ {
