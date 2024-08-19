@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	totalAmountOfSteps := day12.CalculatePart1()
+	totalSumOfArrangements := day12.CalculatePart1()
 
-	log.Print("Day 12 result Part1 sum of steps between galaxies: ", totalAmountOfSteps)
+	log.Print("Day 12 result Part1 sum of steps between galaxies: ", totalSumOfArrangements)
 }
