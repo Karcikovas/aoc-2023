@@ -12,11 +12,3 @@ func factorial(n int) int {
 
 	return result
 }
-
-func Combinations(n, k int) int {
-	if k > n {
-		return 0
-	}
-
-	return factorial(n) / (factorial(k) * factorial(n-k))
-}

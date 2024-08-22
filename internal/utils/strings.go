@@ -13,3 +13,14 @@ func CheckSubstrings(str string, value string) int {
 
 	return matches
 }
+
+func IndexOf(str string, value string) int {
+
+	for index, char := range str {
+		if string(char) == value {
+			return index
+		}
+	}
+
+	return -1
+}
