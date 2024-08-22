@@ -2,7 +2,6 @@ package day12
 
 import (
 	"aoc2023/internal/utils"
-	"log"
 	"strings"
 )
 
@@ -23,13 +22,26 @@ func CalculatePart1() int {
 	return totalSum
 }
 
+func isValid(springsString string, arrangement []int) bool {
+	parts := strings.Split(springsString, ".")
+
+	var groups []int
+	for _, part := range parts {
+		if part != "" {
+			groups = append(groups, len(part))
+		}
+	}
+
+	return utils.ArraysEqual(groups, arrangement)
+}
+
 func travers(springsString string, arrangement []int) {
 	nextUnknown := utils.IndexOf(springsString, "?")
 
 	if nextUnknown == -1 {
-		log.Println(springsString)
-
-		totalSum += 1
+		if isValid(springsString, arrangement) {
+			totalSum += 1
+		}
 	} else {
 		travers(string(springsString[:nextUnknown])+"."+string(springsString[nextUnknown+1:]), arrangement)
 		travers(string(springsString[:nextUnknown])+"#"+string(springsString[nextUnknown+1:]), arrangement)
@@ -57,10 +69,11 @@ func initialValues() []RecordRow {
 }
 
 func getArrangementArray(arrangements string) []int {
+	numbers := strings.Split(arrangements, ",")
 	var values []int
 
-	for _, arrangement := range arrangements {
-		values = append(values, int(arrangement))
+	for _, nmb := range numbers {
+		values = append(values, utils.StringToInt(nmb))
 	}
 
 	return values
